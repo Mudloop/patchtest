@@ -1,0 +1,22 @@
+{
+	"name": "HelloWorld",
+	"manifest": "HelloWorld.cmajorpatch",
+	"files": [
+		{
+			"name": "HelloWorld.cmajorpatch",
+			"type": "file",
+			"binary": false,
+			"content": "{\n    \"CmajorVersion\":    1,\n    \"ID\":               \"dev.cmajor.examples.helloworld\",\n    \"version\":          \"1.0\",\n    \"name\":             \"Hello World\",\n    \"description\":      \"The classic audio Hello World\",\n    \"manufacturer\":     \"Cmajor Software Ltd\",\n    \"category\":         \"generator\",\n    \"isInstrument\":     false,\n\n    \"source\":           \"HelloWorld.cmajor\"\n}\n",
+			"id": "ZqEGXdHP8XUdZDJY",
+			"mime": null
+		},
+		{
+			"name": "HelloWorld.cmajor",
+			"type": "file",
+			"binary": false,
+			"content": "/**\n    The \"hello world\" of audio programming!\n\n    A snippet of \"Gran Vals\" by the great classical guitar\n    composer Francisco Tarrega, performed here using a vintage\n    sine-wave instrument.\n*/\nprocessor HelloWorld\n{\n    output stream float out;\n\n    // This simple struct holds a note + duration for our melody\n    struct Note\n    {\n        int pitch, length;\n\n        void play() const\n        {\n            let numFrames = this.length * framesPerQuarterNote;\n            let frequency  = std::notes::noteToFrequency (this.pitch);\n            let phaseDelta = float (frequency * processor.period * twoPi);\n\n            loop (numFrames)\n            {\n                out <- volume * sin (phase);\n                phase = addModulo2Pi (phase, phaseDelta);\n                advance();\n            }\n        }\n    }\n\n    // This is our processor's entry-point function, which is invoked\n    // by the system\n    void main()\n    {\n        let melody = Note[] ( (79, 1),  (77, 1),  (69, 2),  (71, 2),\n                              (76, 1),  (74, 1),  (65, 2),  (67, 2),\n                              (74, 1),  (72, 1),  (64, 2),  (67, 2),\n                              (72, 4) );\n\n        for (wrap<melody.size> i)\n            melody[i].play();\n    }\n\n    // We'll define a couple of constants here to set the volume and tempo\n    let volume = 0.15f;\n    let framesPerQuarterNote = int (processor.frequency / 7);\n\n    float phase;\n}\n",
+			"id": "dnOGW33j3gMypRma",
+			"mime": null
+		}
+	]
+}

@@ -1,0 +1,22 @@
+{
+	"name": "SineSynth",
+	"manifest": "SineSynth.cmajorpatch",
+	"files": [
+		{
+			"name": "SineSynth.cmajor",
+			"type": "file",
+			"binary": false,
+			"content": "/**\n    A simple synth using sine oscillators, showing use of the voice allocator,\n    message converter and envelopes\n*/\n\ngraph SineSynth  [[main]]\n{\n    input event std::midi::Message midiIn;\n    output stream float out;\n\n    let voiceCount = 8;\n\n    node\n    {\n        voices = Voice[voiceCount];\n        voiceAllocator = std::voices::VoiceAllocator (voiceCount);\n    }\n\n    connection\n    {\n        // Convert the midi message to a our std::notes messages and forward to the voice allocator\n        midiIn -> std::midi::MPEConverter -> voiceAllocator;\n\n        // Plumb the voice allocator to the voices array\n        voiceAllocator.voiceEventOut -> voices.eventIn;\n\n        // Sum the voices audio out to the output\n        voices -> out;\n    }\n}\n\ngraph Voice\n{\n    input event (std::notes::NoteOn, std::notes::NoteOff) eventIn;\n    output stream float out;\n\n    node\n    {\n        noteToFrequency = NoteToFrequency;\n        envelope = std::envelopes::FixedASR (0.01f, 0.1f);\n        oscillator = std::oscillators::Sine (float32);\n    }\n\n    connection\n    {\n        eventIn -> noteToFrequency -> oscillator.frequencyIn;\n        eventIn -> envelope.eventIn;\n        (envelope.gainOut * oscillator.out) -> out;\n    }\n}\n\n// Determine the note frequency from the pitch (midi note)\nprocessor NoteToFrequency\n{\n    input event std::notes::NoteOn eventIn;\n    output event float32 frequencyOut;\n\n    event eventIn (std::notes::NoteOn e)\n    {\n        frequencyOut <- std::notes::noteToFrequency (e.pitch);\n    }\n}\n",
+			"id": "5VnjyHvjTFFbsJ0a",
+			"mime": null
+		},
+		{
+			"name": "SineSynth.cmajorpatch",
+			"type": "file",
+			"binary": false,
+			"content": "{\n    \"CmajorVersion\":    1,\n    \"ID\":               \"dev.cmajor.examples.sinesynth\",\n    \"version\":          \"1.0\",\n    \"name\":             \"SineSynth\",\n    \"description\":      \"A simple synth using the SineOscillator\",\n    \"manufacturer\":     \"Cmajor Software Ltd\",\n    \"isInstrument\":     true,\n\n    \"source\":           \"SineSynth.cmajor\"\n}\n",
+			"id": "L9hfnViO06lPIYCI",
+			"mime": null
+		}
+	]
+}

@@ -1,0 +1,22 @@
+{
+	"name": "Filter",
+	"manifest": "Filter.cmajorpatch",
+	"files": [
+		{
+			"name": "Filter.cmajorpatch",
+			"type": "file",
+			"binary": false,
+			"content": "{\n    \"CmajorVersion\":    1,\n    \"ID\":               \"dev.cmajor.examples.filter\",\n    \"version\":          \"1.0\",\n    \"name\":             \"Filter\",\n    \"description\":      \"A tiny patch that demonstrates how to set up a filter\",\n    \"category\":         \"generator\",\n    \"manufacturer\":     \"Cmajor Software Ltd\",\n    \"isInstrument\":     false,\n\n    \"source\":           \"Filter.cmajor\"\n}\n",
+			"id": "L3IpZboydx7LKIGy",
+			"mime": null
+		},
+		{
+			"name": "Filter.cmajor",
+			"type": "file",
+			"binary": false,
+			"content": "//\n//     ,ad888ba,                              88\n//    d8\"'    \"8b\n//   d8            88,dba,,adba,   ,aPP8A.A8  88     (C)2024 Cmajor Software Ltd\n//   Y8,           88    88    88  88     88  88\n//    Y8a.   .a8P  88    88    88  88,   ,88  88     https://cmajor.dev\n//     '\"Y888Y\"'   88    88    88  '\"8bbP\"Y8  88\n//                                           ,88\n//                                        888P\"\n//\n//  This code may be used under either a GPLv3 or commercial\n//  license: see LICENSE.md for more details.\n\n\ngraph Filter [[ main ]]\n{\n    input filter.frequency [[ mid: 1000 ]];\n    input filter.q;\n\n    input stream float<2> in;\n    output stream float<2> out;\n\n    node filter = std::filters (float<2>)::tpt::svf::Processor;\n\n    connection\n    {\n        in -> filter.in;\n        filter.out -> out;\n    }\n}\n",
+			"id": "zAcGu9ZFxre8VFf0",
+			"mime": null
+		}
+	]
+}

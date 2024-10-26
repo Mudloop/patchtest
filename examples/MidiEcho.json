@@ -1,0 +1,22 @@
+{
+	"name": "MidiEcho",
+	"manifest": "MidiEcho.cmajorpatch",
+	"files": [
+		{
+			"name": "MidiEcho.cmajorpatch",
+			"type": "file",
+			"binary": false,
+			"content": "{\n    \"CmajorVersion\":    1,\n    \"ID\":               \"dev.cmajor.examples.MidiEcho\",\n    \"version\":          \"1.0\",\n    \"name\":             \"MidiEcho\",\n    \"description\":      \"A processor that just receives and emits MIDI messages\",\n    \"category\":         \"midi\",\n    \"manufacturer\":     \"Cmajor Software Ltd\",\n    \"isInstrument\":     false,\n\n    \"source\":           \"MidiEcho.cmajor\"\n}\n",
+			"id": "dbd5vurb4xcBkSnG",
+			"mime": null
+		},
+		{
+			"name": "MidiEcho.cmajor",
+			"type": "file",
+			"binary": false,
+			"content": "/**\n    This processor simply takes MIDI messages and emits them unchanged.\n*/\nprocessor MidiEcho\n{\n    input event std::midi::Message midiIn;\n    output event std::midi::Message midiOut;\n\n    event midiIn (std::midi::Message m)\n    {\n        midiOut <- m;\n    }\n}\n",
+			"id": "a5ISFAzhXnxzMvux",
+			"mime": null
+		}
+	]
+}

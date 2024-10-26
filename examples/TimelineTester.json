@@ -1,0 +1,30 @@
+{
+	"name": "TimelineTester",
+	"manifest": "TimelineTester.cmajorpatch",
+	"files": [
+		{
+			"name": "Timeline_UI.js",
+			"type": "file",
+			"binary": false,
+			"content": "\n\nclass TimelineView extends HTMLElement\n{\n    constructor (patchConnection)\n    {\n        super();\n        this.patchConnection = patchConnection;\n        this.innerHTML = this.getHTML();\n\n        this.framePos = \"?\";\n        this.transport = \"?\";\n        this.timeSig = \"?\";\n        this.tempo = \"?\";\n        this.quarterNote = \"?\";\n        this.barQuarterNote = \"?\";\n\n        this.patchConnection.addEndpointListener (\"timeSigOut\", value =>\n        {\n            this.timeSig = value.numerator + \"/\" + value.denominator;\n            this.refreshDisplay();\n        });\n\n        this.patchConnection.addEndpointListener (\"positionOut\", value =>\n        {\n            this.framePos = value.frameIndex;\n            this.quarterNote = value.quarterNote;\n            this.barQuarterNote = value.barStartQuarterNote;\n            this.refreshDisplay();\n        });\n\n        this.patchConnection.addEndpointListener (\"transportStateOut\", value =>\n        {\n            if (value.flags & 2)\n                this.transport = \"Recording\";\n            else if (value.flags & 1)\n                this.transport = \"Playing\";\n            else\n                this.transport = \"Stopped\";\n\n            this.transport += \"   Looping: \" + ((value.flags & 4) ? \"on\" : \"off\");\n            this.refreshDisplay();\n        });\n\n        this.patchConnection.addEndpointListener (\"tempoOut\", value =>\n        {\n            this.tempo = value.bpm;\n            this.refreshDisplay();\n        });\n    }\n\n    refreshDisplay()\n    {\n        this.querySelector (\"#status\").innerText = `\nTransport state:         ${this.transport}\nTempo:                   ${this.tempo} bpm\nTime-signature:          ${this.timeSig}\nFrame count:             ${this.framePos}\nQuarter-note position:   ${this.quarterNote}\nBar start quarter-note:  ${this.barQuarterNote}`;\n    }\n\n    getHTML()\n    {\n        return `\n        <style>\n            .main {\n                background: #345;\n                display: block;\n                width: 100%;\n                height: 100%;\n                padding: 1em;\n                overflow: auto;\n                color: #eee;\n            }\n\n            .main pre {\n                font-size: 1.4em;\n                font-family: Monaco, Consolas, monospace;\n            }\n\n        </style>\n\n        <div class=\"main\">\n          <pre id=\"status\"></pre>\n        </div>`;\n    }\n}\n\nwindow.customElements.define (\"timeline-patch-view\", TimelineView);\n\nexport default function createPatchView (patchConnection)\n{\n    return new TimelineView (patchConnection);\n}\n",
+			"id": "COJVD7YzwrJIVKFf",
+			"mime": "text/javascript"
+		},
+		{
+			"name": "TimelineTester.cmajorpatch",
+			"type": "file",
+			"binary": false,
+			"content": "{\n    \"CmajorVersion\":    1,\n    \"ID\":               \"dev.cmajor.examples.TimelineTester\",\n    \"version\":          \"0.1\",\n    \"name\":             \"TimelineTester\",\n    \"description\":      \"A patch that catches incoming timeline events and displays them on its UI\",\n    \"category\":         \"effect\",\n    \"manufacturer\":     \"Cmajor Software Ltd\",\n    \"isInstrument\":     false,\n\n    \"source\":           [ \"TimelineTester.cmajor\" ],\n\n    \"view\":             { \"src\": \"Timeline_UI.js\",\n                          \"width\": 500,\n                          \"height\": 250,\n                          \"resizable\": true }\n}\n",
+			"id": "EmboAzclIPRFo7sq",
+			"mime": null
+		},
+		{
+			"name": "TimelineTester.cmajor",
+			"type": "file",
+			"binary": false,
+			"content": "//\n//     ,ad888ba,                              88\n//    d8\"'    \"8b\n//   d8            88,dba,,adba,   ,aPP8A.A8  88     (C)2024 Cmajor Software Ltd\n//   Y8,           88    88    88  88     88  88\n//    Y8a.   .a8P  88    88    88  88,   ,88  88     https://cmajor.dev\n//     '\"Y888Y\"'   88    88    88  '\"8bbP\"Y8  88\n//                                           ,88\n//                                        888P\"\n//\n//  This code may be used under either a GPLv3 or commercial\n//  license: see LICENSE.md for more details.\n\n\n/// Title: Timeline example\n///\n/// This example demonstrates the timeline structures and how to access them.\n/// It simply copies the input events to output events so they can be logged.\n\nprocessor TimelineTester\n{\n    input\n    {\n        event std::timeline::TimeSignature     timeSigIn;\n        event std::timeline::Tempo             tempoIn;\n        event std::timeline::TransportState    transportStateIn;\n        event std::timeline::Position          positionIn;\n    }\n\n    output\n    {\n        event std::timeline::TimeSignature     timeSigOut;\n        event std::timeline::Tempo             tempoOut;\n        event std::timeline::TransportState    transportStateOut;\n        event std::timeline::Position          positionOut;\n    }\n\n    event timeSigIn (std::timeline::TimeSignature t)\n    {\n        timeSigOut <- t;\n    }\n\n    event tempoIn (std::timeline::Tempo t)\n    {\n        tempoOut <- t;\n    }\n\n    event transportStateIn (std::timeline::TransportState t)\n    {\n        transportStateOut <- t;\n    }\n\n    event positionIn (std::timeline::Position p)\n    {\n        positionOut <- p;\n    }\n}\n",
+			"id": "NneJtCENCSEtznSU",
+			"mime": null
+		}
+	]
+}
