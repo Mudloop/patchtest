@@ -1,1 +1,36 @@
-<h1>Hello</h1>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Patch Editor V3</title>
+	<style>
+		body, html {
+			margin: 0;
+			padding: 0;
+			overflow: hidden;
+			background-color: white;
+			height: 100%;
+
+		}
+		* {
+			box-sizing: border-box;
+		}
+		body {
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			flex-direction: column;
+		}
+		/*patch-loader {
+			max-width: 999px !important;
+			max-height: 640px;
+		}*/
+		
+	</style>
+</head>
+<body>
+	<patch-loader patch="./examples/FaustFM.json"></patch-loader>
+	<script src="./index.js" type="module"></script>
+</body>
+</html>
